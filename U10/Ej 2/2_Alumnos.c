@@ -19,25 +19,26 @@ int main()
 
     alum = fopen("E:\\Mathi\\UNLaM\\Elementos de Programacion\\Programas\\U10\\Ej 1\\alumnos.dat","rb");
     fread(&al,sizeof(alumnos),1,alum);
-    prom = fopen("promocionados.dat","wb");
-    curs = fopen("cursados.dat","wb");
-    repro = fopen("reprobados.dat","wb");
+    prom = fopen("promocionados.dat","w+b");
+    curs = fopen("cursados.dat","w+b");
+    repro = fopen("reprobados.dat","w+b");
 
-    if(al.nota[0] && al.nota[1] >= 7)
-    {
-        fwrite(&al,sizeof(alumnos),1,prom);
-    }
-    else
-    {
-        if (al.nota[0] && al.nota[1] >= 4)
+        if(al.nota[0] && al.nota[1] >= 7)
         {
-            fwrite(&al,sizeof(alumnos),1,curs);
+            fwrite(&al,sizeof(alumnos),1,prom);
         }
         else
         {
-            fwrite(&al,sizeof(alumnos),1,repro);
+            if (al.nota[0] && al.nota[1] >= 4)
+            {
+                fwrite(&al,sizeof(alumnos),1,curs);
+            }
+            else
+            {
+                fwrite(&al,sizeof(alumnos),1,repro);
+            }
         }
-    }
+
     fclose(alum);
     fclose(prom);    
     fclose(curs);    
