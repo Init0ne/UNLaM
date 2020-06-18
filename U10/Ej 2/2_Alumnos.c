@@ -6,7 +6,8 @@ typedef struct
 {
     int dni;
     char nombre_Apellido[80];
-    int nota[2];
+    int nota1;
+    int nota2;
     float nota_Promedio;
 }alumnos;
 
@@ -18,18 +19,19 @@ int main()
     alumnos al;
 
     alum = fopen("E:\\Mathi\\UNLaM\\Elementos de Programacion\\Programas\\U10\\Ej 1\\alumnos.dat","rb");
-    fread(&al,sizeof(alumnos),1,alum);
     prom = fopen("promocionados.dat","w+b");
     curs = fopen("cursados.dat","w+b");
     repro = fopen("reprobados.dat","w+b");
-
-        if(al.nota[0] && al.nota[1] >= 7)
+    while(!feof(alum))
+    {
+        fread(&al,sizeof(alumnos),1,alum);
+        if(al.nota1 && al.nota2 >= 7)
         {
             fwrite(&al,sizeof(alumnos),1,prom);
         }
         else
         {
-            if (al.nota[0] && al.nota[1] >= 4)
+            if (al.nota1 && al.nota2 >= 4)
             {
                 fwrite(&al,sizeof(alumnos),1,curs);
             }
@@ -38,7 +40,8 @@ int main()
                 fwrite(&al,sizeof(alumnos),1,repro);
             }
         }
-
+    }
+    
     fclose(alum);
     fclose(prom);    
     fclose(curs);    
@@ -71,7 +74,7 @@ void leer_Archivo(alumnos al, char n_Arch[])
 
     while(!feof(arch))
     {
-        printf("\n %8d \t %30s \t %10d \t %10d \t %15.2f \n", al.dni,al.nombre_Apellido,al.nota[0],al.nota[1],al.nota_Promedio);
+        printf("\n %8d \t %30s \t %10d \t %10d \t %15.2f \n", al.dni,al.nombre_Apellido,al.nota1,al.nota2,al.nota_Promedio);
         fread(&al, sizeof(alumnos), 1, arch);
     }
     fclose(arch);

@@ -6,7 +6,8 @@ typedef struct
 {
     int dni;
     char nombre_Apellido[80];
-    int nota[2];
+    int nota1;
+    int nota2;
     float nota_Promedio;
 }alumnos;
 
@@ -64,11 +65,11 @@ void ingreso_Datos(alumnos al)
         leer_Texto(al.nombre_Apellido,80);
 
         printf("\n Ingrese la nota 1 del alumno: ");
-        scanf("%d", &al.nota[0]);
+        scanf("%d", &al.nota1);
         printf("\n Ingrese la nota 2 del alumno: ");
-        scanf("%d", &al.nota[1]);
+        scanf("%d", &al.nota2);
 
-        al.nota_Promedio = ((float)al.nota[0] + (float)al.nota[1]) / 2;
+        al.nota_Promedio = ((float)al.nota1 + (float)al.nota2) / 2;
         //Finaliza la carga 
         //-------------------------------------------------------------
         //Se copian los datos del registro en el archivo
@@ -98,7 +99,7 @@ void lectura_Datos(alumnos al)
     printf("\n DNI \t\t\t\t Nombre y Apellido \t Nota 1 \t Nota 2 \t Nota promedio \n\n");
     while(!feof(alum))
     {
-        printf("\n %8d \t %30s \t %10d \t %10d \t %15.2f \n", al.dni,al.nombre_Apellido,al.nota[0],al.nota[1],al.nota_Promedio);
+        printf("\n %8d \t %30s \t %10d \t %10d \t %15.2f \n", al.dni,al.nombre_Apellido,al.nota1,al.nota2,al.nota_Promedio);
         fread(&al, sizeof(alumnos), 1, alum);
     }
 }
