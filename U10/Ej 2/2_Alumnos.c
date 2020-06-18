@@ -25,13 +25,13 @@ int main()
     while(!feof(alum))
     {
         fread(&al,sizeof(alumnos),1,alum);
-        if(al.nota1 && al.nota2 >= 7)
+        if(al.nota1 >= 7 && al.nota2 >= 7)
         {
             fwrite(&al,sizeof(alumnos),1,prom);
         }
         else
         {
-            if (al.nota1 && al.nota2 >= 4)
+            if (al.nota1 >= 4 && al.nota2 >= 4)
             {
                 fwrite(&al,sizeof(alumnos),1,curs);
             }
