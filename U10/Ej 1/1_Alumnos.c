@@ -48,7 +48,7 @@ void ingreso_Datos(alumnos al)
 {
     FILE *alum;
     alum = fopen("alumnos.dat","ab");
-    //Se corrobora que no haya problemas
+    //Se corrobora que el archivo exista 
     if(alum == NULL)
     {
         printf("\n Se produjo un error al abrir el archivo.");
