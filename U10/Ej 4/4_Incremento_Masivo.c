@@ -21,11 +21,12 @@ typedef struct
 
 void generarOriginal ();
 void mostrar_Archivo(productos);
+void actualizarPrecios (float);
 
 int main()
 {
     generarOriginal();
-    
+    actualizarPrecios(20);
 
     system("pause");
     return 0;
@@ -78,7 +79,7 @@ void generarOriginal ()
 
         correcto = fwrite(&art,sizeof(productos),1,precios);
         fflush(stdin);
-        printf("\n\n Escritura = %d\n\n", correcto);
+        //printf("\n\n Escritura = %d\n\n", correcto);
 
         printf("\n Ingrese el codigo del articulo (o 0 para terminar) :");
         scanf("%d", &art.cod);
@@ -109,3 +110,59 @@ void mostrar_Archivo(productos art)
     printf("\n");
     fclose(arch);
 }
+
+void actualizarPrecios (float porcent)
+{
+    FILE *old, *update;
+    int escritura,lectura;
+    productos art, art2;
+
+    old = fopen("E:\\Mathi\\UNLaM\\Elementos de Programacion\\Programas\\U10\\Ej 4\\precios.dat","rb");
+    if(old == NULL)
+    {
+        printf("\n Se produjo un error al abrir el archivo.");
+        system("pause");
+        exit(1);
+    }
+    update = fopen("E:\\Mathi\\UNLaM\\Elementos de Programacion\\Programas\\U10\\Ej 4\\Precios_actualizados.dat","wb");
+    if(update == NULL)
+    {
+        printf("\n Se produjo un error al abrir el archivo.");
+        system("pause");
+        exit(1);
+    }
+
+    while(!feof(old))
+    {
+        lectura = fread(&art, sizeof(productos),1,old);
+        //printf("\n\n Lectura = %d \n\n", lectura);
+        if(lectura)
+        {
+            art2.cod = art.cod;
+            art2.precio = art. precio + (art.precio * porcent / 100);
+            strcpy(art2.descri,art.descri);
+            fflush(stdin);
+            escritura = fwrite(&art2, sizeof(productos),1,update);
+            fflush(stdin);
+            //printf("\n\n Escritura = %d \n\n", escritura);
+        }
+    }
+    fclose(old);
+    fclose(update);
+
+    update = fopen("E:\\Mathi\\UNLaM\\Elementos de Programacion\\Programas\\U10\\Ej 4\\Precios_actualizados.dat","rb");
+    //Lectura archivo
+    lectura = fread(&art, sizeof(productos), 1, update);
+    //printf("\n\n Lectura = %d \n\n", lectura);
+    //Mientras no llegue al final del archivo lee
+    printf("\n Codigo \t Precio \t Desscripcion");
+    while(!feof(update))
+    {
+        printf("\n %5d \t\t $%10.2f \t %s", art.cod, art.precio, art.descri );
+        lectura = fread(&art, sizeof(productos), 1, update);
+        //printf("\n\n Lectura = %d \n\n", lectura);
+    }
+    printf("\n");
+    fclose(update);
+}
+
