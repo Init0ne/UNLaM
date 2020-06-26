@@ -13,7 +13,7 @@ void mostrar_Archivo(productos );
 int main()
 {
     productos prod;
-    int cod, flag;
+    int cod, flag, n;
     float precio;
     
     printf("\n Bienvenidos al sistema de actualizacion de precios! \n\n\n");
@@ -29,10 +29,10 @@ int main()
         scanf("%f", &precio);
         
         //Apertura del archivo
-        FILE * produ;
-        produ = fopen("E:\\Mathi\\UNLaM\\Elementos de Programacion\\Programas\\U10\\Ej 3\\productos.dat","a+b");
+        FILE * prodFile;
+        prodFile = fopen("E:\\Mathi\\UNLaM\\Elementos de Programacion\\Programas\\U10\\Ej 3\\productos.dat","r+b");
         //Se corrobora que no haya problemas
-        if(produ == NULL)
+        if(prodFile == NULL)
         {
             printf("\n Se produjo un error al abrir el archivo.");
             system("pause");
@@ -40,30 +40,29 @@ int main()
         }
 
         flag = 0;
-        while (!feof(produ) && flag != 1)
+        while (!feof(prodFile) && flag != 1)
         {
-            fread(&prod,sizeof(productos),1,produ);
-            fflush(stdin);
+            fread(&prod,sizeof(productos),1,prodFile);
 
             if(prod.cod == cod)
             {
-                prod.cod = cod;
                 prod.precio = precio;
-                fwrite(&prod,sizeof(productos),1,produ);
-                fflush(stdin);
+                n = fwrite(&prod,sizeof(productos),1,prodFile);
                 printf("\n El precio fue actualizado satisfactoriaente! \n");
                 flag = 1;
+                printf("\n %d",n);
             }
 
         }
-            if(flag == 0)
-            {
-                printf("\n Codigo no existente, intentelo nuevamente!\n");
-            }
-            fclose(produ);
-            //Nuevo comienzo de ciclo
-            printf("\n Ingrese el codigo del siguiente producto a modificar : ");
-            scanf("%d", &cod);
+        if(flag == 0)
+        {
+            printf("\n Codigo no existente, intentelo nuevamente!\n");
+        }
+        fclose(prodFile);
+        //Nuevo comienzo de ciclo
+        printf("\n Ingrese el codigo del siguiente producto a modificar : ");
+        fflush(stdin);
+        scanf("%d", &cod);
     }
     
     //Pruebas
@@ -77,7 +76,7 @@ int main()
 void mostrar_Archivo(productos prod)
 {
     FILE *arch;
-    arch = fopen("productos.dat","rb");
+    arch = fopen("E:\\Mathi\\UNLaM\\Elementos de Programacion\\Programas\\U10\\Ej 3\\productos.dat","rb");
     //Se corrobora que no haya problemas
     if(arch == NULL)
     {
