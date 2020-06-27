@@ -22,11 +22,18 @@ typedef struct
 void generarOriginal ();
 void mostrar_Archivo(productos);
 void actualizarPrecios (float);
+int contarRegistros(char[] );
+
 
 int main()
 {
+    int contador;
+    char name[30];
     generarOriginal();
     actualizarPrecios(20);
+    //Cuenta registros en el archivo
+    contador = contarRegistros("precios.dat");
+    printf("\n%d",contador);
 
     system("pause");
     return 0;
@@ -166,3 +173,27 @@ void actualizarPrecios (float porcent)
     fclose(update);
 }
 
+int contarRegistros(char name[])
+{
+    int cont, read;
+    productos curso;
+    FILE *arch;
+    arch = fopen(name,"rb");
+    if(arch == NULL)
+    {
+        printf("\n Se produjo un error al abrir el archivo.");
+        system("pause");
+        exit(1);
+    }
+    cont = 0;
+
+    while (!feof(arch))
+    {
+        read = fread(&curso,sizeof(productos),1,arch);
+        if(read)
+        {
+            cont++;
+        }
+    }
+    return cont;
+}
