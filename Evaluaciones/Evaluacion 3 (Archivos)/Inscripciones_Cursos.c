@@ -29,11 +29,11 @@ int main()
     int opc, valido;
     char carga;
 
-    opc = menuPrincipal();
+    opc = 0;
 
     while (opc != 5)
     {
-        system("cls");
+        opc = menuPrincipal();
         switch (opc)
         {
         case 1:
@@ -60,8 +60,7 @@ int main()
             break;
         
         case 5:
-            printf("\n Hasta luego !");
-            system("pause");
+            printf("\n Hasta luego ! \n");
             break;
 
         default:
@@ -70,8 +69,6 @@ int main()
             break;
 
             system("cls");
-
-            opc = menuPrincipal();
         }
     }
 
@@ -133,11 +130,8 @@ int contarRegistros(char name[]) // Contador de registros dentro de un archivo.
 
     while (!feof(arch))
     {
-        read = fread(&curso,sizeof(cursos),1,arch);
-        if(read)
-        {
-            cont++;
-        }
+        fread(&curso,sizeof(cursos),1,arch);
+        cont++;
     }
     return cont;
 }
@@ -146,7 +140,7 @@ void cargaCursos(char opcion)
 {
     FILE *carga;
     int cont;
-    char modo[3];
+    char modo[5];
     cursos curso;
 
     if(opcion == 'N')
@@ -161,6 +155,12 @@ void cargaCursos(char opcion)
     }
     
     carga = fopen("CursoOfe.dat",modo);
+    if(carga == NULL)
+    {
+        printf("\n Se produjo un error al abrir el archivo.");
+        system("pause");
+        exit(1);
+    }
 
     do
     {
@@ -177,9 +177,9 @@ void cargaCursos(char opcion)
         {
             printf("\n Capacidad :");
             scanf("%d",&curso.cap);
-        } while (curso.cap > 50);
+        } while (curso.cap > 50 || curso.cap < 1);
         
-        printf("\n Precio :");
+        printf("\n Precio : $");
         scanf("%f",&curso.price);
 
         cont++;
@@ -190,7 +190,9 @@ void cargaCursos(char opcion)
         {
             printf("\n Ingrese el codigo del curso entre 100 y 1000 (o 99 para finalizar la carga) :");
             scanf("%d",&curso.cod);
+            fflush(stdin);
         } while (curso.cod < 99 || curso.cod > 1000);
     }
     fclose(carga);
 }
+
