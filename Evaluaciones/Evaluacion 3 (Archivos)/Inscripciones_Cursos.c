@@ -22,6 +22,7 @@ typedef struct
 void leer_Texto(char [], int );
 int menuPrincipal();
 int contarRegistros(char[] );
+int buscarCod(int, char[] );
 void cargaCursos(char );
 
 int main()
@@ -119,7 +120,7 @@ int contarRegistros(char name[]) // Contador de registros dentro de un archivo.
     int cont, read;
     cursos curso;
     FILE *arch;
-    arch = fopen(name,"rb");
+    arch = fopen("E:\\Mathi\\UNLaM\\Elementos de Programacion\\Programas\\Evaluaciones\\Evaluacion 3 (Archivos)\\CursoOfe.dat","rb");
     if(arch == NULL)
     {
         printf("\n Se produjo un error al abrir el archivo.");
@@ -130,16 +131,44 @@ int contarRegistros(char name[]) // Contador de registros dentro de un archivo.
 
     while (!feof(arch))
     {
-        fread(&curso,sizeof(cursos),1,arch);
+        read = fread(&curso,sizeof(cursos),1,arch);
         cont++;
     }
+    fclose(arch);
     return cont;
+}
+
+int buscarCod(int cod, char name[])
+{
+    int existe;
+    cursos curso;
+    FILE *arch;
+
+    arch = fopen(name,"rb");
+    if(arch == NULL)
+    {
+        printf("\n Se produjo un error al abrir el archivo.");
+        system("pause");
+        exit(1);
+    }   
+    existe = 0;
+
+    while(!feof(arch) && existe == 0)
+    {
+        fread(&curso,sizeof(cursos),1,arch);
+        if(cod == curso.cod)
+        {
+            existe = 1;
+        }
+    }
+    fclose(arch);
+    return existe;
 }
 
 void cargaCursos(char opcion)
 {
     FILE *carga;
-    int cont;
+    int cont, existe;
     char modo[5];
     cursos curso;
 
@@ -166,7 +195,19 @@ void cargaCursos(char opcion)
     {
         printf("\n Ingrese el codigo del curso entre 100 y 1000 (o 99 para finalizar la carga) :");
         scanf("%d",&curso.cod);
-    } while (curso.cod < 99 || curso.cod > 1000);
+        /*
+        if(!strcmpi(modo,"ab"))
+        {
+            fclose(carga);
+            existe = buscarCod(curso.cod, "CursoOfe.dat");
+            carga = fopen("CursoOfe.dat",modo);
+            if(existe)
+            {
+                printf("\n Este codigo de curso ya ha sido utilizado, intentelo nuevamente!");
+            }
+        }
+        */
+    } while (curso.cod < 99 || curso.cod > 1000 || existe == 1);
     
     while(curso.cod != 99 && cont <= 20)
     {
@@ -190,9 +231,20 @@ void cargaCursos(char opcion)
         {
             printf("\n Ingrese el codigo del curso entre 100 y 1000 (o 99 para finalizar la carga) :");
             scanf("%d",&curso.cod);
-            fflush(stdin);
-        } while (curso.cod < 99 || curso.cod > 1000);
+            /*
+            if(!strcmpi(modo,"ab"))
+            {
+                existe = buscarCod(curso.cod, "CursoOfe.dat");
+                if(existe)
+                {
+                    printf("\n Este codigo de curso ya ha sido utilizado, intentelo nuevamente!");
+                }
+            }
+            */
+        } while (curso.cod < 99 || curso.cod > 1000 || existe == 1);
     }
     fclose(carga);
 }
+
+
 
