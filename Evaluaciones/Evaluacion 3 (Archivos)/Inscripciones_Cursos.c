@@ -41,6 +41,7 @@ int main()
     while (opc != 5)
     {
         opc = menuPrincipal();
+        system("cls");
         switch (opc)
         {
         case 1:
@@ -127,6 +128,11 @@ int menuPrincipal()
     {
         printf("\n\n Elija una opcion :  ");
         scanf("%d",&opc);
+        fflush(stdin);
+        if(opc < 1 || opc > 5)
+        {
+            printf("\n Asegurese de ingresar una opcion valida.\n");
+        }
     } while (opc < 1 || opc > 5);
 
     return opc;
@@ -369,10 +375,13 @@ void cargaInscripcion() //Segunda opcion del menu
     {
         printf("\n Ingrese el codigo del curso (o 0 para finalizar) : ");
         scanf("%d", &cod);
-        existe = buscarCod(cod,"CursoOfe.dat");
-        if(!existe)
+        if(cod != 0)
         {
-            printf("\n Curso inexistente, intentelo nuevamente ! \n");
+            existe = buscarCod(cod,"CursoOfe.dat");
+            if(!existe)
+            {
+                printf("\n Curso inexistente, intentelo nuevamente ! \n");
+            }
         }
     } while (!existe && cod != 0 && (cod >= 100 || cod <= 1000));
     
@@ -516,5 +525,3 @@ void noInscriptos()
     }
     printf("\n");
 }
-
-
