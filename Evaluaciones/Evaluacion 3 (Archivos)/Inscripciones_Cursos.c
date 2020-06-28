@@ -140,7 +140,7 @@ int contarRegistros(char name[]) // Contador de registros dentro de un archivo.
 
 int buscarCod(int cod, char name[])
 {
-    int existe;
+    int existe, read;
     cursos curso;
     FILE *arch;
 
@@ -155,7 +155,7 @@ int buscarCod(int cod, char name[])
 
     while(!feof(arch) && existe == 0)
     {
-        fread(&curso,sizeof(cursos),1,arch);
+        read = fread(&curso,sizeof(cursos),1,arch);
         if(cod == curso.cod)
         {
             existe = 1;
@@ -195,18 +195,13 @@ void cargaCursos(char opcion)
     {
         printf("\n Ingrese el codigo del curso entre 100 y 1000 (o 99 para finalizar la carga) :");
         scanf("%d",&curso.cod);
-        /*
-        if(!strcmpi(modo,"ab"))
+        fclose(carga);
+        existe = buscarCod(curso.cod, "CursoOfe.dat");
+        carga = fopen("CursoOfe.dat","ab");
+        if(existe)
         {
-            fclose(carga);
-            existe = buscarCod(curso.cod, "CursoOfe.dat");
-            carga = fopen("CursoOfe.dat",modo);
-            if(existe)
-            {
-                printf("\n Este codigo de curso ya ha sido utilizado, intentelo nuevamente!");
-            }
+            printf("\n Este codigo de curso ya ha sido utilizado, intentelo nuevamente!");
         }
-        */
     } while (curso.cod < 99 || curso.cod > 1000 || existe == 1);
     
     while(curso.cod != 99 && cont <= 20)
@@ -231,16 +226,13 @@ void cargaCursos(char opcion)
         {
             printf("\n Ingrese el codigo del curso entre 100 y 1000 (o 99 para finalizar la carga) :");
             scanf("%d",&curso.cod);
-            /*
-            if(!strcmpi(modo,"ab"))
+            fclose(carga);
+            existe = buscarCod(curso.cod, "CursoOfe.dat");
+            carga = fopen("CursoOfe.dat","ab");
+            if(existe)
             {
-                existe = buscarCod(curso.cod, "CursoOfe.dat");
-                if(existe)
-                {
-                    printf("\n Este codigo de curso ya ha sido utilizado, intentelo nuevamente!");
-                }
+                printf("\n Este codigo de curso ya ha sido utilizado, intentelo nuevamente!");
             }
-            */
         } while (curso.cod < 99 || curso.cod > 1000 || existe == 1);
     }
     fclose(carga);
