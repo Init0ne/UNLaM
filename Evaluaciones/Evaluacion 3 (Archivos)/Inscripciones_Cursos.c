@@ -29,6 +29,7 @@ void descontarCap(int , char [], int );
 void cargaInscripcion();
 int contarInscri(int );
 void cursosInscriptos();
+void noInscriptos();
 
 int main()
 {
@@ -54,21 +55,30 @@ int main()
                 carga = toupper(carga);
             } while (carga != 'N' && carga != 'C');
             cargaCursos(carga);
+            system("pause");
+            system("cls");
             break;
 
         case 2:
             cargaInscripcion();
+            system("pause");
+            system("cls");
             break;
 
         case 3:
             cursosInscriptos();
+            system("pause");
+            system("cls");
             break;
         
         case 4:
+            noInscriptos();
+            system("pause");
+            system("cls");
             break;
         
         case 5:
-            printf("\n Hasta luego ! \n");
+            printf("\n Hasta luego ! \n\n");
             break;
 
         default:
@@ -174,7 +184,7 @@ int buscarCod(int cod, char name[]) // Busca el codigo y muestra si ya existe o 
 
 void cargaCursos(char opcion) // Primera opcion del menu
 {
-    FILE *carga, *inscrip;
+    FILE *carga, *inscrip, *sInscrip;
     int cont, existe;
     char modo[5];
     cursos curso;
@@ -185,6 +195,8 @@ void cargaCursos(char opcion) // Primera opcion del menu
         cont = 0;
         inscrip = fopen("Inscripcion.dat","wb");
         fclose(inscrip);
+        sInscrip = fopen("Sin_Inscrip.dat","wb");
+        fclose(sInscrip);
     }
     else
     {
@@ -400,10 +412,13 @@ void cargaInscripcion() //Segunda opcion del menu
         {
             printf("\n Ingrese el codigo del curso (o 0 para finalizar) : ");
             scanf("%d", &cod);
-            existe = buscarCod(cod,"CursoOfe.dat");
-            if(!existe)
+            if(cod != 0)
             {
-                printf("\n Curso inexistente, intentelo nuevamente ! \n");
+                existe = buscarCod(cod,"CursoOfe.dat");
+                if(!existe)
+                {
+                    printf("\n Curso inexistente, intentelo nuevamente ! \n");
+                }
             }
         } while (!existe && cod != 0 && (cod >= 100 || cod <= 1000));
     }
@@ -472,6 +487,34 @@ void cursosInscriptos()
     }
     printf("\n");
     fclose(arch);
+}
+
+void noInscriptos()
+{
+    int flag, read;
+    FILE *sInscrip;
+    solicitudes estudiante;
+
+    sInscrip = fopen("Sin_Inscrip.dat","rb");
+    printf("\n \t\t--Alumnos que no pudieron registrarse-- \n\n");
+    printf("\n Apellido y nombre \t\t\t Direccion de Email \t\t\t Cod. Curso \t\t Cantidad");
+    printf("\n ---------------------------------------------------------------------------------------------------------------- \n");
+
+    flag = 0;
+    while(!feof(sInscrip))
+    {
+        read = fread(&estudiante,sizeof(solicitudes),1,sInscrip);
+        if(read)
+        {
+            flag = 1;
+            printf("\n %20s \t\t\t %20s \t\t\t %6d \t\t %6d", estudiante.name, estudiante.email, estudiante.cod, estudiante.cant);
+        }
+    }
+    if(!flag)
+    {
+        printf("No hay ningun alumno sin inscribir !");
+    }
+    printf("\n");
 }
 
 
