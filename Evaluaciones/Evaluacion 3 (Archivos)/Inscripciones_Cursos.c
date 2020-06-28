@@ -27,6 +27,8 @@ void cargaCursos(char );
 int buscarCap(int , char []);
 void descontarCap(int , char [], int );
 void cargaInscripcion();
+int contarInscri(int );
+void cursosInscriptos();
 
 int main()
 {
@@ -59,6 +61,7 @@ int main()
             break;
 
         case 3:
+            cursosInscriptos();
             break;
         
         case 4:
@@ -171,7 +174,7 @@ int buscarCod(int cod, char name[]) // Busca el codigo y muestra si ya existe o 
 
 void cargaCursos(char opcion) // Primera opcion del menu
 {
-    FILE *carga;
+    FILE *carga, *inscrip;
     int cont, existe;
     char modo[5];
     cursos curso;
@@ -180,6 +183,8 @@ void cargaCursos(char opcion) // Primera opcion del menu
     {
         strcpy(modo,"wb");
         cont = 0;
+        inscrip = fopen("Inscripcion.dat","wb");
+        fclose(inscrip);
     }
     else
     {
@@ -403,4 +408,70 @@ void cargaInscripcion() //Segunda opcion del menu
         } while (!existe && cod != 0 && (cod >= 100 || cod <= 1000));
     }
 }
+
+int contarInscri(int cod) // Cuenta la cantidad de inscriptos por codigo de curso
+{
+    int cantInscri, read;
+    solicitudes estudiante;
+    FILE *arch;
+
+    arch = fopen("Inscripcion.dat","rb");
+    if(arch == NULL)
+    {
+        printf("\n Se produjo un error al abrir el archivo.");
+        system("pause");
+        exit(1);
+    }   
+
+    cantInscri = 0;
+    while(!feof(arch))
+    {
+        read = fread(&estudiante,sizeof(solicitudes),1,arch);
+        if(cod == estudiante.cod && read == 1)
+        {
+            cantInscri += estudiante.cant;
+        }
+    }
+    fclose(arch);
+    return cantInscri;
+}
+
+void cursosInscriptos()
+{
+    int cantInscri, read, inscripto;
+    float monto;
+    FILE *arch;
+    cursos curso;
+
+    printf("\n Descripcion \t\t\t Inscriptos \t\t Monto\n");
+    printf("--------------------------------------------------------------");
+
+    arch = fopen("CursoOfe.dat","rb");
+    if(arch == NULL)
+    {
+        printf("\n Se produjo un error al abrir el archivo.");
+        system("pause");
+        exit(1);
+    }
+
+    inscripto = 0;
+    while(!feof(arch))
+    {
+        read = fread(&curso,sizeof(cursos),1,arch);
+        cantInscri = contarInscri(curso.cod);
+        if(cantInscri > 0 && read == 1)
+        {
+            monto = (float)cantInscri * curso.price;
+            printf("\n %10s \t\t\t %8d \t\t $%.2f", curso.descri, cantInscri, monto);
+            inscripto = 1;
+        }
+    }
+    if(!inscripto)
+    {
+        printf("\n Aun no se cuenta con ningun alumno inscripto.");
+    }
+    printf("\n");
+    fclose(arch);
+}
+
 
