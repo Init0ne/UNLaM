@@ -120,7 +120,7 @@ int contarRegistros(char name[]) // Contador de registros dentro de un archivo.
     int cont, read;
     cursos curso;
     FILE *arch;
-    arch = fopen("E:\\Mathi\\UNLaM\\Elementos de Programacion\\Programas\\Evaluaciones\\Evaluacion 3 (Archivos)\\CursoOfe.dat","rb");
+    arch = fopen("CursoOfe.dat","rb");
     if(arch == NULL)
     {
         printf("\n Se produjo un error al abrir el archivo.");
