@@ -404,4 +404,3 @@ void cargaInscripcion() //Segunda opcion del menu
     }
 }
 
-
