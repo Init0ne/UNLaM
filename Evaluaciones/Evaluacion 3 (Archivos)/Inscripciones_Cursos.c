@@ -272,29 +272,73 @@ int buscarCap(int cod, char name[]) // Busca la capacidad maxima por curso y la 
 
 void descontarCap(int cod, char name[], int cant) // Descuenta las vacantes libres del curso
 {
-    int existe, read;
+    int read, write, copiado;
     cursos curso;
-    FILE *arch;
+    FILE *arch, *aux;
 
-    arch = fopen(name,"a+b");
+    arch = fopen(name,"rb");
     if(arch == NULL)
     {
         printf("\n Se produjo un error al abrir el archivo.");
         system("pause");
         exit(1);
     }   
-    existe = 0;
 
-    while(!feof(arch) && existe == 0)
+    aux = fopen("Auxiliar.dat","wb");
+    if(arch == NULL)
+    {
+        printf("\n Se produjo un error al abrir el archivo.");
+        system("pause");
+        exit(1);
+    }   
+
+    //Lee el archivo y lo copia en un aux modificandolo
+    copiado = 0;
+    while(!feof(arch)) 
     {
         read = fread(&curso,sizeof(cursos),1,arch);
-        if(cod == curso.cod)
+        if(cod == curso.cod && !copiado)
         {
-            existe = 1;
+            copiado = 1;
             curso.cap -= cant;
+            write = fwrite(&curso,sizeof(cursos),1,aux);
+        }
+        else
+        {
+            if(read)
+            {
+                write = fwrite(&curso,sizeof(cursos),1,aux);
+            }
+        }
+    }
+    fclose(aux);
+    fclose(arch);
+
+    // Copia el archivo ya modificado al principal
+    arch = fopen(name,"wb");
+    if(arch == NULL)
+    {
+        printf("\n Se produjo un error al abrir el archivo.");
+        system("pause");
+        exit(1);
+    }
+    aux = fopen("Auxiliar.dat","rb");
+    if(arch == NULL)
+    {
+        printf("\n Se produjo un error al abrir el archivo.");
+        system("pause");
+        exit(1);
+    }
+    while(!feof(aux))
+    {
+        read = fread(&curso,sizeof(cursos),1,aux);
+        if(read)
+        {
+            write = fwrite(&curso,sizeof(cursos),1,arch);
         }
     }
     fclose(arch);
+    fclose(aux);
 }
 
 void cargaInscripcion() //Segunda opcion del menu
@@ -313,7 +357,7 @@ void cargaInscripcion() //Segunda opcion del menu
         {
             printf("\n Curso inexistente, intentelo nuevamente ! \n");
         }
-    } while (!existe && (cod != 0 && cod >= 100 || cod <= 1000));
+    } while (!existe && cod != 0 && (cod >= 100 || cod <= 1000));
     
     while(cod != 0)
     {
@@ -356,7 +400,7 @@ void cargaInscripcion() //Segunda opcion del menu
             {
                 printf("\n Curso inexistente, intentelo nuevamente ! \n");
             }
-        } while (!existe && (cod != 0 && cod >= 100 || cod <= 1000));
+        } while (!existe && cod != 0 && (cod >= 100 || cod <= 1000));
     }
 }
 
