@@ -24,6 +24,9 @@ int menuPrincipal();
 int contarRegistros(char[] );
 int buscarCod(int, char[] );
 void cargaCursos(char );
+int buscarCap(int , char []);
+void descontarCap(int , char [], int );
+void cargaInscripcion();
 
 int main()
 {
@@ -52,6 +55,7 @@ int main()
             break;
 
         case 2:
+            cargaInscripcion();
             break;
 
         case 3:
@@ -138,7 +142,7 @@ int contarRegistros(char name[]) // Contador de registros dentro de un archivo.
     return cont;
 }
 
-int buscarCod(int cod, char name[])
+int buscarCod(int cod, char name[]) // Busca el codigo y muestra si ya existe o no
 {
     int existe, read;
     cursos curso;
@@ -165,7 +169,7 @@ int buscarCod(int cod, char name[])
     return existe;
 }
 
-void cargaCursos(char opcion)
+void cargaCursos(char opcion) // Primera opcion del menu
 {
     FILE *carga;
     int cont, existe;
@@ -238,5 +242,122 @@ void cargaCursos(char opcion)
     fclose(carga);
 }
 
+int buscarCap(int cod, char name[]) // Busca la capacidad maxima por curso y la retorna
+{
+    int capacidad, read;
+    cursos curso;
+    FILE *arch;
+
+    arch = fopen(name,"rb");
+    if(arch == NULL)
+    {
+        printf("\n Se produjo un error al abrir el archivo.");
+        system("pause");
+        exit(1);
+    }   
+
+    capacidad = 0;
+
+    while(!feof(arch) && !capacidad)
+    {
+        read = fread(&curso,sizeof(cursos),1,arch);
+        if(cod == curso.cod)
+        {
+            capacidad = curso.cap;
+        }
+    }
+    fclose(arch);
+    return capacidad;
+}
+
+void descontarCap(int cod, char name[], int cant) // Descuenta las vacantes libres del curso
+{
+    int existe, read;
+    cursos curso;
+    FILE *arch;
+
+    arch = fopen(name,"a+b");
+    if(arch == NULL)
+    {
+        printf("\n Se produjo un error al abrir el archivo.");
+        system("pause");
+        exit(1);
+    }   
+    existe = 0;
+
+    while(!feof(arch) && existe == 0)
+    {
+        read = fread(&curso,sizeof(cursos),1,arch);
+        if(cod == curso.cod)
+        {
+            existe = 1;
+            curso.cap -= cant;
+        }
+    }
+    fclose(arch);
+}
+
+void cargaInscripcion() //Segunda opcion del menu
+{
+    int cod, existe, cant, cap, write;
+    char name[60], email[50];
+    solicitudes estudiante;
+    FILE *inscri, *sInscri;
+
+    do
+    {
+        printf("\n Ingrese el codigo del curso (o 0 para finalizar) : ");
+        scanf("%d", &cod);
+        existe = buscarCod(cod,"CursoOfe.dat");
+        if(!existe)
+        {
+            printf("\n Curso inexistente, intentelo nuevamente ! \n");
+        }
+    } while (!existe && (cod != 0 && cod >= 100 || cod <= 1000));
+    
+    while(cod != 0)
+    {
+        printf("\n Apellido y nombre : ");
+        leer_Texto(name,60);
+        printf("\n Email : ");
+        leer_Texto(email,50);
+        printf("\n Cantidad de vacantes a reservar : ");
+        fflush(stdin);
+        scanf("%d", &cant);
+        cap = buscarCap(cod,"CursoOfe.dat");
+        //Carga de campos
+        estudiante.cod = cod;
+        estudiante.cant = cant;
+        strcpy(estudiante.name,name);
+        strcpy(estudiante.email,email);
+        //Condicional para escritura de archivo
+        if(cap - cant >= 0)
+        {
+            descontarCap(cod,"CursoOfe.dat",cant);
+            inscri = fopen("Inscripcion.dat", "ab");
+            write = fwrite(&estudiante,sizeof(solicitudes),1,inscri);
+            fclose(inscri);
+            printf("\n Felicidades, inscripcion realizada con exito! ");
+        }
+        else
+        {
+            sInscri = fopen("Sin_Inscrip.dat", "ab");
+            write = fwrite(&estudiante,sizeof(solicitudes),1,sInscri);
+            fclose(sInscri);
+            printf("\n Lo sentimos, la cantidad de vacantes disponibles en el curso es = %d. ", cap);
+        }
+        //Nuevo inicio
+        do
+        {
+            printf("\n Ingrese el codigo del curso (o 0 para finalizar) : ");
+            scanf("%d", &cod);
+            existe = buscarCod(cod,"CursoOfe.dat");
+            if(!existe)
+            {
+                printf("\n Curso inexistente, intentelo nuevamente ! \n");
+            }
+        } while (!existe && (cod != 0 && cod >= 100 || cod <= 1000));
+    }
+}
 
 
