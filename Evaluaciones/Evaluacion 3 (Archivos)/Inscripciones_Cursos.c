@@ -56,13 +56,11 @@ int main()
                 carga = toupper(carga);
             } while (carga != 'N' && carga != 'C');
             cargaCursos(carga);
-            system("pause");
             system("cls");
             break;
 
         case 2:
             cargaInscripcion();
-            system("pause");
             system("cls");
             break;
 
@@ -79,7 +77,9 @@ int main()
             break;
         
         case 5:
-            printf("\n Hasta luego ! \n\n");
+            printf("\033[0;31m");
+            printf("\n Hasta luego ! ( -Apruebeme- !) \n\n");
+            printf("\033[0m");
             break;
 
         default:
@@ -118,7 +118,9 @@ int menuPrincipal()
 {
     int opc;
 
+    printf("\033[0;32m");
     printf("\n \t\t\t\t --Menu principal--\n\n");
+    printf("\033[0m");
     printf("\n [1] - Carga de cursos");
     printf("\n [2] - Carga de inscripcion");
     printf("\n [3] - Listar ocupacion de cursos");
